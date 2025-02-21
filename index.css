@@ -1,0 +1,72 @@
+body{
+    background-color: rgb(20,20,20);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    font-family: monospace;
+    color: white;
+    font-size: 1vw;
+}
+
+.profile-image{
+    margin: 1vh;
+    width:30vw;
+    height:58vh;
+    object-fit: contain;
+
+}
+
+.centered{
+
+    display: flex;
+    flex-direction: column;
+    
+    /*
+    background-color: rgb(30,30,30);
+    width: 60vw;
+    height: 60vh;
+    margin: 0;
+    position: absolute;
+    border-radius: 1vw;
+    border: 0.2vh solid blue;
+    animation: border-fade-animation infinite ease 5s, start-animation ease 5s;
+    */
+
+    animation: start-animation ease 5s;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+}
+/*
+@keyframes border-fade-animation {
+    0%{
+        border-color: blue;
+    }
+    25%{
+        border-color: white;
+
+    }
+    50%{
+        border-color: blueviolet;
+
+    }
+    75%{
+        border-color: white;
+    }
+    100%{
+        border-color: blue;
+    }
+}
+*/
+@keyframes start-animation {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 100%;
+    }
+}

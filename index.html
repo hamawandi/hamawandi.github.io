@@ -4,23 +4,164 @@
         <title>Yusuf Hamawandi</title>
         <link rel="icon" type="image/x-icon" href="https://avatars.githubusercontent.com/u/75538491?v=4">
         <link rel="stylesheet" type="text/css" href="index.css">
+        <script src="https://xemantic.github.io/shader-web-background/dist/shader-web-background.min.js"></script>
+        <script type="x-shader/x-fragment" id="image">
+            #ifdef GL_ES
+            precision highp float;
+            #endif
+
+            #extension GL_OES_standard_derivatives : enable
+
+            #define NUM_OCTAVES 6
+
+            uniform float time;
+            uniform vec2 resolution;
+
+            mat3 rotX(float a) {
+                float c = cos(a);
+                float s = sin(a);
+                return mat3(
+                    1, 0, 0,
+                    0, c, -s,
+                    0, s, c
+                );
+            }
+
+            mat3 rotY(float a) {
+                float c = cos(a);
+                float s = sin(a);
+                return mat3(
+                    c, 0, -s,
+                    0, 1, 0,
+                    s, 0, c
+                );
+            }
+
+            float random(vec2 pos) {
+                return fract(sin(dot(pos.xy, vec2(13.9898, 78.233))) * 43758.5453123);
+            }
+
+            float noise(vec2 pos) {
+                vec2 i = floor(pos);
+                vec2 f = fract(pos);
+                float a = random(i + vec2(0.0, 0.0));
+                float b = random(i + vec2(1.0, 0.0));
+                float c = random(i + vec2(0.0, 1.0));
+                float d = random(i + vec2(1.0, 1.0));
+                vec2 u = f * f * (3.0 - 2.0 * f);
+                return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+            }
+
+            float fbm(vec2 pos) {
+                float v = 0.0;
+                float a = 0.5;
+                vec2 shift = vec2(100.0);
+                mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+                for (int i = 0; i < NUM_OCTAVES; i++) {
+                    float dir = mod(float(i), 2.0) > 0.5 ? 1.0 : -1.0;
+                    v += a * noise(pos - 0.05 * dir * time);
+
+                    pos = rot * pos * 2.0 + shift;
+                    a *= 0.5;
+                }
+                return v;
+            }
+
+            void main(void) {
+                vec2 p = (gl_FragCoord.xy * 3.0 - resolution.xy) / min(resolution.x, resolution.y);
+                p -= vec2(12.0, 0.0);
+
+                float t = 0.0, d;
+
+                float time2 = 1.0;
+
+                vec2 q = vec2(0.0);
+                q.x = fbm(p + 0.00 * time2);
+                q.y = fbm(p + vec2(1.0));
+                vec2 r = vec2(0.0);
+                r.x = fbm(p + 1.0 * q + vec2(1.7, 1.2) + 0.15 * time2);
+                r.y = fbm(p + 1.0 * q + vec2(8.3, 2.8) + 0.126 * time2);
+                float f = fbm(p + r);
+                
+                // DS: hornidev
+                vec3 color = mix(
+                    vec3(1.0, 1.0, 2.0),
+                    vec3(1.0, 1.0, 1.0),
+                    clamp((f * f) * 5.5, 1.2, 15.5)
+                );
+
+                color = mix(
+                    color,
+                    vec3(1.0, 1.0, 1.0),
+                    clamp(length(q), 2.0, 2.0)
+                );
+
+                color = mix(
+                    color,
+                    vec3(0.3, 0.2, 1.0),
+                    clamp(length(r.x), 0.0, 5.0)
+                );
+
+                color = (f * f * f * 1.0 + 0.5 * 1.7 * 0.0 + 0.9 * f) * color;
+
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                float alpha = 50.0 - max(pow(100.0 * distance(uv.x, -1.0), 0.0), pow(2.0 * distance(uv.y, 0.5), 5.0));
+                gl_FragColor = vec4(color * 100.0, color.r);
+                gl_FragColor = vec4(color, alpha * color.r);
+            }
+        </script>
+        <script>
+            shaderWebBackground.shade({
+              shaders: {
+                image: {
+                    uniforms: {
+                        time: (gl, loc) => gl.uniform1f(loc, performance.now() / 1000),
+                        resolution: (gl, loc, ctx) => gl.uniform2f(loc, ctx.width, ctx.height)
+                    }
+                }
+              }
+            });
+          </script>
+
     </head>
     <body>
-        <div class="centered">
-            <div class="centered-left">
-                <img class="profile-image" src="https://avatars.githubusercontent.com/u/75538491?v=4" alt="Hamawandi´s Github profile picture of a cat with sun glasses on and chain. A cool cat.">
+        <div class="centered-wrapper">
+            <div class="centered">
+                <div class="centered-left">
+                    <img class="profile-image" src="https://avatars.githubusercontent.com/u/75538491?v=4" alt="Hamawandi´s Github profile picture of a cat with sun glasses on and chain. A cool cat.">
+                </div>
+                <div class="centered-right">
+                    <h1>Yusuf Hamawandi</h1>
+                    <p>Hi my name is Yusuf and I am a programmer.</p>
+                    <p>I experiment with...</p>
+                    <p>-Building websites</p>
+                    <p>-Game modding</p>
+                    <p>-Low level development</p>
+                </div>    
             </div>
-            <div class="centered-right">
-                <h1>Yusuf Hamawandi</h1>
-                <p>Hi my name is Yusuf and I am a programmer :)</p>
-            </div>
-            <a herf="https://github.com/hamawandi">
-                <p><- Github</p>
-            </a>
-            <a herf="https://github.com/hamawandi">
-                <p><- Discord Server</p>
-            </a>
-            <h6>*Links are not currently working ^^</h6>
         </div>
+        <br>
+        <div class="centered-wrapper">
+            <div class="centered">
+                <div class="oneline">
+                    <a href="https://glslsandbox.com/e#109550.0">shader source</a>
+                    <p>|</p>
+                    <a href="https://github.com/xemantic/shader-web-background">shader library</a>
+                </div>
+            </div>
+        </div>
+        <!--
+        <script>
+
+
+            var root= document.querySelector(":root");
+            rot = 0;
+            while(true){
+                root.style.setProperty("--linear-gradient", toString(rot) + "deg");
+                
+            }
+
+        </script>
+        -->
     </body>
 </html>

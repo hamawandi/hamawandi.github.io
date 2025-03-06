@@ -1,21 +1,33 @@
+:root{
+    --gradient-rotation: 0deg;
+}
+
 body{
-    background-color: rgb(20,20,20);
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
 
     font-family: monospace;
     color: white;
     font-size: 1vw;
+    background-color: rgb(20,20,20);
+
 }
 
 .profile-image{
-    margin: 1vh;
-    width:30vw;
-    height:58vh;
+    width:28vw;
+    height:60vh;
     object-fit: contain;
 
+}
+
+.centered-wrapper{
+    margin:0;
+    background-image: linear-gradient(--gradient-rotation rgba(255,0,200,0.8), rgba(0,0,255,0.1));
+    padding:0.5px;
+    animation: gradient-rotation infinite;
 }
 
 .centered{
@@ -34,13 +46,26 @@ body{
     animation: border-fade-animation infinite ease 5s, start-animation ease 5s;
     */
 
-    animation: start-animation ease 5s;
+    backdrop-filter: blur(100px);
+    animation: start-animation ease 2.5s;
+}
+
+.oneline {
+    display:flex;
+    flex-direction: row;
+
+}
+
+
+.centered * {
+    margin: 0.5vh 1vh 0.5vh 1vh;
 }
 
 a{
     text-decoration: none;
     color: white;
 }
+
 /*
 @keyframes border-fade-animation {
     0%{
@@ -62,11 +87,16 @@ a{
     }
 }
 */
+
+
+
 @keyframes start-animation {
     from{
-        opacity: 0;
+        transform: translateX(10vh);
+        opacity:0;
     }
     to{
-        opacity: 100%;
+        transform: translateX(0vh);
+        opacity: 100;
     }
 }

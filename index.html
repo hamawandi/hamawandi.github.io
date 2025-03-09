@@ -6,11 +6,11 @@
         <link rel="stylesheet" type="text/css" href="index.css">
         <script src="https://xemantic.github.io/shader-web-background/dist/shader-web-background.min.js"></script>
         <script type="x-shader/x-fragment" id="image">
+            #extension GL_OES_standard_derivatives : enable
             #ifdef GL_ES
             precision highp float;
             #endif
 
-            #extension GL_OES_standard_derivatives : enable
 
             #define NUM_OCTAVES 6
 
